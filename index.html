@@ -43,34 +43,33 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
-                <input type="text" id="campoBusca" onkeyup="filtrarManifestos()" placeholder="Procurar por ID da viagem, destino ou status..." class="w-full bg-[#111312] border border-[#2a302c] text-white text-base rounded-xl block pl-12 pr-4 py-4 focus:outline-none focus:border-[#8cd9a4] focus:ring-1 focus:ring-[#8cd9a4] transition-all placeholder-[#4a5a50]">
+                <input type="text" id="campoBusca" onkeyup="filtrarManifestos()" placeholder="Procurar por ID da viagem, rota ou status..." class="w-full bg-[#111312] border border-[#2a302c] text-white text-base rounded-xl block pl-12 pr-4 py-4 focus:outline-none focus:border-[#8cd9a4] focus:ring-1 focus:ring-[#8cd9a4] transition-all placeholder-[#4a5a50]">
             </div>
         </div>
 
-        <!-- Grelha de Manifestos -->
+        <!-- Grid de Manifestos -->
         <div id="manifestos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <p class="text-[#8c9c91] text-center col-span-full py-10">A carregar manifestos...</p>
+            <p class="text-[#8c9c91] text-center col-span-full py-10">Carregando manifestos...</p>
         </div>
     </main>
 
     <script>
-        // COLOQUE AQUI O URL GERADO NO GOOGLE APPS SCRIPT
-        const API_URL = 'COLE_AQUI_O_SEU_URL_DO_APPS_SCRIPT';
+        // URL da sua API do Google Apps Script
+        const API_URL = 'https://script.google.com/a/macros/magazineluiza.com.br/s/AKfycbzmgJLDauO9WCrOc3eB5Q1FaQhFHVNoGIYwKVIy9U16EAkw2c1VlXvJJIOEHBcx_PZlnw/exec';
 
         async function getManifestos() {
             const container = document.getElementById('manifestos-container');
             
             try {
                 const resposta = await fetch(API_URL);
-                if (!resposta.ok) throw new Error("Erro na rede.");
+                if (!resposta.ok) throw new Error("Erro na rede ou problema de permissão (CORS).");
                 
-                // O Apps Script já devolve o JSON perfeitamente formatado
                 const dados = await resposta.json();
                 
                 container.innerHTML = '';
 
                 if (dados.length === 0) {
-                    container.innerHTML = '<p class="text-[#8c9c91] text-center col-span-full py-10">Nenhum registo encontrado na folha de cálculo.</p>';
+                    container.innerHTML = '<p class="text-[#8c9c91] text-center col-span-full py-10">Nenhum registro encontrado na planilha.</p>';
                     return;
                 }
 
@@ -85,6 +84,9 @@
                     } else if (status.toLowerCase().includes('trânsito')) {
                         corStatus = 'bg-blue-500/10 text-blue-500 border border-blue-500/20'; 
                         bolinhaStatus = 'bg-blue-500';
+                    } else if (status.toLowerCase().includes('cancelado')) {
+                        corStatus = 'bg-red-500/10 text-red-500 border border-red-500/20'; 
+                        bolinhaStatus = 'bg-red-500';
                     }
 
                     const cardHTML = `
@@ -120,7 +122,8 @@
                 });
 
             } catch (erro) {
-                container.innerHTML = `<p class="text-red-400 text-center col-span-full py-10">Erro de ligação. Verifique se o URL da API está correto.</p>`;
+                container.innerHTML = `<p class="text-red-400 text-center col-span-full py-10">Erro de conexão. Verifique se a URL da API possui permissão pública de acesso.</p>`;
+                console.error(erro);
             }
         }
 
