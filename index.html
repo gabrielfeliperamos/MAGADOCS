@@ -150,7 +150,7 @@
                     container.innerHTML += cardHTML;
                 });
 
-            } catch (erro) {
+             catch (erro) {
                 if (erro.name === 'AbortError') {
                     container.innerHTML = `<p class="text-red-400 text-center col-span-full py-10">Tempo esgotado. O servidor demorou muito para responder.</p>`;
                 } else {
