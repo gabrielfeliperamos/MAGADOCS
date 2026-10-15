@@ -1,216 +1,155 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAGADOCs - Gestão de Manifestos</title>
-    <!-- Tailwind CSS -->
+    <title>MAGADOCs - Manifestos</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        doc: {
-                            green: '#8bb593', /* Cor do texto DOCs */
-                            panel: '#151816', /* Fundo do input e dos cards */
-                            border: '#2a302c', /* Borda sutil */
-                            btn: '#284030', /* Fundo do botão Baixar */
-                            btnhover: '#34523e' /* Hover do botão */
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        /* Forçando o background escuro via CSS padrão para não depender do Tailwind CDN aqui */
         body {
-            background: radial-gradient(circle at center, #1a281f 0%, #0a0e0b 100%);
-            background-color: #0a0e0b; /* Fallback */
+            background: radial-gradient(circle at center, #1a281f 0%, #050706 100%);
             background-attachment: fixed;
-            background-repeat: no-repeat;
-            color: #ffffff;
             min-height: 100vh;
+            color: #ffffff;
         }
-        
-        /* Custom scrollbar escuro */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0e0b; }
-        ::-webkit-scrollbar-thumb { background: #2a302c; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #8bb593; }
     </style>
 </head>
-<body class="flex flex-col font-sans">
+<body class="p-6 md:p-10 font-sans">
 
-    <!-- Cabeçalho (Header) -->
-    <header class="bg-[#0a0e0b]/80 backdrop-blur-md border-b border-doc-border px-6 py-4 flex flex-col sm:flex-row items-center justify-between sticky top-0 z-10 shadow-xl">
-        <div class="flex items-center gap-6 w-full sm:w-auto">
-            <!-- Logo -->
-            <div class="flex items-center gap-3">
-                <img src="Gemini_Generated_Image_a4sf8wa4sf8wa4sf.jpg" onerror="this.src='https://placehold.co/100x100/151816/8bb593?text=Logo'" alt="Logo" class="h-12 w-12 rounded-xl shadow-md object-cover border border-doc-border">
-                <h1 class="text-2xl font-extrabold tracking-wide hidden sm:block text-white">
-                    MAGA<span class="text-doc-green">DOCs</span>
-                </h1>
-            </div>
-
-            <!-- Seletor de Unidade -->
-            <div class="flex items-center gap-3 border-l border-doc-border pl-6 w-full sm:w-auto">
-                <label for="unidade" class="text-sm font-medium text-gray-400 whitespace-nowrap">Unidade:</label>
-                <div class="relative w-full sm:w-56">
-                    <select id="unidade" class="w-full appearance-none bg-doc-panel border border-doc-border text-white py-2.5 pl-4 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-doc-green/30 focus:border-doc-green transition text-sm cursor-pointer">
-                        <option value="todas">Todas as Unidades</option>
-                        <option value="sp">São Paulo - Matriz</option>
-                        <option value="rj">Rio de Janeiro - Filial</option>
-                        <option value="mg">Minas Gerais - CD</option>
-                    </select>
-                    <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                </div>
+    <!-- Cabeçalho -->
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+        <div class="flex items-center gap-4">
+            <div class="text-3xl font-black tracking-widest text-white">
+                MAGA<span class="text-[#8cd9a4]">DOCs</span>
             </div>
         </div>
-
-        <div class="mt-4 sm:mt-0 flex items-center gap-3">
-            <div class="h-10 w-10 rounded-full bg-doc-btn flex items-center justify-center text-white font-bold border border-doc-border shadow-sm">
-                US
-            </div>
+        
+        <div class="w-full md:w-64">
+            <label class="block text-xs text-[#8c9c91] mb-1 font-semibold uppercase tracking-wider">Unidade</label>
+            <select class="w-full bg-[#111312] border border-[#2a302c] text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-[#4a5a50] appearance-none">
+                <option>São Paulo - Matriz</option>
+                <option>Rio de Janeiro</option>
+                <option>Minas Gerais</option>
+            </select>
         </div>
     </header>
 
-    <!-- Conteúdo Principal -->
-    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-10">
-        
-        <!-- Área de Busca -->
-        <div class="max-w-3xl mx-auto mb-12 relative group">
-            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                <i class="ph ph-magnifying-glass text-2xl text-gray-500 group-focus-within:text-doc-green transition-colors"></i>
+    <!-- Barra de Busca -->
+    <main class="max-w-4xl mx-auto">
+        <div class="mb-10">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                    <svg class="w-5 h-5 text-[#8c9c91]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <input type="text" id="campoBusca" onkeyup="filtrarManifestos()" placeholder="Procurar por ID da viagem, destino ou status..." class="w-full bg-[#111312] border border-[#2a302c] text-white text-base rounded-xl block pl-12 pr-4 py-4 focus:outline-none focus:border-[#8cd9a4] focus:ring-1 focus:ring-[#8cd9a4] transition-all placeholder-[#4a5a50]">
             </div>
-            <input type="text" id="searchInput" 
-                class="block w-full pl-14 pr-6 py-4 text-lg bg-doc-panel border border-doc-border rounded-xl shadow-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-doc-green/30 focus:border-doc-green transition-all" 
-                placeholder="Buscar ID, Status, Cidade...">
         </div>
 
-        <!-- Título da Seção -->
-        <div class="flex items-center justify-between mb-8 border-b border-doc-border pb-4">
-            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-                <i class="ph ph-files text-doc-green"></i>
-                Manifestos Recentes
-            </h2>
-            <span class="text-xs text-doc-green bg-doc-green/10 border border-doc-green/20 px-3 py-1.5 rounded-full font-bold tracking-wide uppercase" id="resultadosCount">
-                0 resultados
-            </span>
+        <!-- Grelha de Manifestos -->
+        <div id="manifestos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <p class="text-[#8c9c91] text-center col-span-full py-10">A carregar manifestos...</p>
         </div>
-
-        <!-- Grid de Manifestos -->
-        <div id="manifestosGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <!-- Cards injetados via JS -->
-        </div>
-
-        <!-- Empty State -->
-        <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-gray-400 bg-doc-panel border border-doc-border rounded-xl mt-6">
-            <i class="ph ph-file-search text-6xl text-doc-border mb-4"></i>
-            <p class="text-xl font-bold text-white mb-2">Nenhum manifesto encontrado</p>
-            <p class="text-sm">Tente buscar por um ID diferente ou limpe os filtros de busca.</p>
-        </div>
-
     </main>
 
     <script>
-        // Dados simulados
-        const manifestosData = [
-            { id: 'Viagem #10295', status: 'Em Trânsito', rota: 'São Paulo -> Rio de Janeiro', veiculo: 'Placa ABC-1234' },
-            { id: 'Viagem #10296', status: 'Pendente', rota: 'Campinas -> São Paulo', veiculo: 'Aguardando' },
-            { id: 'Viagem #10297', status: 'Concluído', rota: 'Curitiba -> Florianópolis', veiculo: 'Placa XYZ-9876' },
-            { id: 'Viagem #10298', status: 'Em Trânsito', rota: 'Belo Horizonte -> Vitória', veiculo: 'Placa DEF-5678' },
-            { id: 'Viagem #10299', status: 'Concluído', rota: 'Porto Alegre -> Caxias do Sul', veiculo: 'Placa GHI-9012' },
-            { id: 'Viagem #10300', status: 'Cancelado', rota: 'Goiânia -> Brasília', veiculo: 'N/A' },
-            { id: 'Viagem #10301', status: 'Pendente', rota: 'Salvador -> Aracaju', veiculo: 'Aguardando' }
-        ];
+        // COLOQUE AQUI O URL GERADO NO GOOGLE APPS SCRIPT
+        const API_URL = 'COLE_AQUI_O_SEU_URL_DO_APPS_SCRIPT';
 
-        const gridElement = document.getElementById('manifestosGrid');
-        const searchInput = document.getElementById('searchInput');
-        const countElement = document.getElementById('resultadosCount');
-        const emptyState = document.getElementById('emptyState');
-
-        function getStatusBadge(status) {
-            switch(status) {
-                case 'Em Trânsito': return '<span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-blue-900/40 text-blue-300 border border-blue-700/50">Em Trânsito</span>';
-                case 'Concluído': return '<span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-emerald-900/40 text-emerald-300 border border-emerald-700/50">Concluído</span>';
-                case 'Pendente': return '<span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-amber-900/40 text-amber-300 border border-amber-700/50">Pendente</span>';
-                case 'Cancelado': return '<span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-red-900/40 text-red-300 border border-red-700/50">Cancelado</span>';
-                default: return `<span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-gray-800 text-gray-300 border border-gray-600">${status}</span>`;
-            }
-        }
-
-        function renderManifestos(manifestos) {
-            gridElement.innerHTML = '';
-
-            if (manifestos.length === 0) {
-                gridElement.classList.add('hidden');
-                emptyState.classList.remove('hidden');
-                emptyState.classList.add('flex');
-            } else {
-                gridElement.classList.remove('hidden');
-                emptyState.classList.add('hidden');
-                emptyState.classList.remove('flex');
+        async function getManifestos() {
+            const container = document.getElementById('manifestos-container');
+            
+            try {
+                const resposta = await fetch(API_URL);
+                if (!resposta.ok) throw new Error("Erro na rede.");
                 
-                manifestos.forEach(item => {
+                // O Apps Script já devolve o JSON perfeitamente formatado
+                const dados = await resposta.json();
+                
+                container.innerHTML = '';
+
+                if (dados.length === 0) {
+                    container.innerHTML = '<p class="text-[#8c9c91] text-center col-span-full py-10">Nenhum registo encontrado na folha de cálculo.</p>';
+                    return;
+                }
+
+                dados.forEach(manifesto => {
+                    const status = manifesto.status;
+                    let corStatus = 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20';
+                    let bolinhaStatus = 'bg-yellow-500';
+                    
+                    if(status.toLowerCase().includes('concluído')) {
+                        corStatus = 'bg-green-500/10 text-green-500 border border-green-500/20'; 
+                        bolinhaStatus = 'bg-green-500';
+                    } else if (status.toLowerCase().includes('trânsito')) {
+                        corStatus = 'bg-blue-500/10 text-blue-500 border border-blue-500/20'; 
+                        bolinhaStatus = 'bg-blue-500';
+                    }
+
                     const cardHTML = `
-                        <div class="bg-doc-panel rounded-xl border border-doc-border p-6 flex flex-col justify-between h-full hover:border-doc-green/40 transition-colors">
+                        <div class="bg-[#111312] border border-[#2a302c] rounded-xl p-5 flex flex-col justify-between hover:border-[#4a5a50] transition-colors manifesto-card" data-id="${manifesto.id.toLowerCase()}" data-status="${status.toLowerCase()}" data-trajeto="${manifesto.trajeto.toLowerCase()}">
                             <div>
-                                <div class="flex justify-between items-start mb-5">
+                                <div class="flex justify-between items-start mb-4 gap-2">
                                     <div>
-                                        <p class="text-xs text-gray-500 font-bold uppercase mb-1">Identificador</p>
-                                        <h3 class="text-xl font-bold text-white">${item.id}</h3>
+                                        <p class="text-[10px] text-[#8c9c91] font-bold tracking-widest mb-1">ID DA VIAGEM</p>
+                                        <h3 class="text-xl text-gray-100 font-bold tracking-wider">#${manifesto.id}</h3>
                                     </div>
-                                    ${getStatusBadge(item.status)}
+                                    <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${corStatus}">
+                                        <span class="w-1.5 h-1.5 rounded-full ${bolinhaStatus}"></span>
+                                        ${status}
+                                    </span>
                                 </div>
-                                
-                                <div class="space-y-3 mb-6">
-                                    <div class="flex items-start gap-3">
-                                        <i class="ph ph-map-pin-line text-lg text-doc-green mt-0.5"></i>
-                                        <div>
-                                            <p class="text-xs text-gray-500 font-medium">Origem / Destino</p>
-                                            <p class="text-sm text-gray-200 font-medium">${item.rota}</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-3">
-                                        <i class="ph ph-truck text-lg text-gray-500"></i>
-                                        <span class="text-sm text-gray-400">${item.veiculo}</span>
-                                    </div>
+                                <div class="mb-4">
+                                    <p class="text-[10px] text-[#8c9c91] font-bold tracking-widest mb-1">ROTA</p>
+                                    <p class="text-sm text-gray-300 font-medium">${manifesto.trajeto}</p>
                                 </div>
                             </div>
                             
-                            <button class="w-full mt-auto flex items-center justify-center gap-2 bg-doc-btn hover:bg-doc-btnhover text-white font-semibold py-3 px-4 rounded-lg transition-colors border border-[#3b5e47]/30">
-                                <i class="ph ph-download-simple text-lg"></i>
+                            <button onclick="abrirLink('${manifesto.link}')" class="w-full mt-2 flex items-center justify-center gap-2 bg-[#263b2c] hover:bg-[#2d4734] text-[#8cd9a4] py-3 rounded-lg text-xs font-bold tracking-wider transition-colors border border-[#36523e]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
                                 BAIXAR MDF-E
                             </button>
                         </div>
                     `;
-                    gridElement.innerHTML += cardHTML;
+                    container.innerHTML += cardHTML;
                 });
+
+            } catch (erro) {
+                container.innerHTML = `<p class="text-red-400 text-center col-span-full py-10">Erro de ligação. Verifique se o URL da API está correto.</p>`;
             }
-            countElement.textContent = `${manifestos.length} resultado${manifestos.length !== 1 ? 's' : ''}`;
         }
 
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const filteredData = manifestosData.filter(item => 
-                item.id.toLowerCase().includes(query) || 
-                item.status.toLowerCase().includes(query) ||
-                item.rota.toLowerCase().includes(query)
-            );
-            renderManifestos(filteredData);
-        });
+        function abrirLink(url) {
+            if (!url || url === 'undefined' || url === '') {
+                alert("Nenhum link de MDF-e cadastrado para esta viagem.");
+                return;
+            }
+            window.open(url, '_blank');
+        }
 
-        // Init
-        renderManifestos(manifestosData);
+        function filtrarManifestos() {
+            const textoBusca = document.getElementById('campoBusca').value.toLowerCase();
+            const cards = document.querySelectorAll('.manifesto-card');
+
+            cards.forEach(card => {
+                const id = card.getAttribute('data-id');
+                const status = card.getAttribute('data-status');
+                const trajeto = card.getAttribute('data-trajeto');
+
+                if (id.includes(textoBusca) || status.includes(textoBusca) || trajeto.includes(textoBusca)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        window.onload = getManifestos;
     </script>
 </body>
 </html>
