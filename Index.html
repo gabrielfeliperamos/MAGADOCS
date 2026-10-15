@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAGADOCs - Gestão de Manifestos</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        doc: {
+                            green: '#8bb593', /* Cor do texto DOCs */
+                            panel: '#151816', /* Fundo do input e dos cards */
+                            border: '#2a302c', /* Borda sutil */
+                            btn: '#284030', /* Fundo do botão Baixar */
+                            btnhover: '#34523e' /* Hover do botão */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Forçando o background escuro via CSS padrão para não depender do Tailwind CDN aqui */
+        body {
+            background: radial-gradient(circle at center, #1a281f 0%, #0a0e0b 100%);
+            background-color: #0a0e0b; /* Fallback */
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        
+        /* Custom scrollbar escuro */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0e0b; }
+        ::-webkit-scrollbar-thumb { background: #2a302c; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8bb593; }
+    </style>
+</head>
+<body class="flex flex-col font-sans">
+
+    <!-- Cabeçalho (Header) -->
+    <header class="bg-[#0a0e0b]/80 backdrop-blur-md border-b border-doc-border px-6 py-4 flex flex-col sm:flex-row items-center justify-between sticky top-0 z-10 shadow-xl">
+        <div class="flex items-center gap-6 w-full sm:w-auto">
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+                <img src="Gemini_Generated_Image_a4sf8wa4sf8wa4sf.jpg" onerror="this.src='https://placehold.co/100x100/151816/8bb593?text=Logo'" alt="Logo" class="h-12 w-12 rounded-xl shadow-md object-cover border border-doc-border">
+                <h1 class="text-2xl font-extrabold tracking-wide hidden sm:block text-white">
+                    MAGA<span class="text-doc-green">DOCs</span>
+                </h1>
+            </div>
+
+            <!-- Seletor de Unidade -->
+            <div class="flex items-center gap-3 border-l border-doc-border pl-6 w-full sm:w-auto">
+                <label for="unidade" class="text-sm font-medium text-gray-400 whitespace-nowrap">Unidade:</label>
+                <div class="relative w-full sm:w-56">
+                    <select id="unidade" class="w-full appearance-none bg-doc-panel border border-doc-border text-white py-2.5 pl-4 pr-10 rounded-lg outline-none focus:ring-2 focus:ring-doc-green/30 focus:border-doc-green transition text-sm cursor-pointer">
+                        <option value="todas">Todas as Unidades</option>
+                        <option value="sp">São Paulo - Matriz</option>
+                        <option value="rj">Rio de Janeiro - Filial</option>
+                        <option value="mg">Minas Gerais - CD</option>
+                    </select>
+                    <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 sm:mt-0 flex items-center gap-3">
+            <div class="h-10 w-10 rounded-full bg-doc-btn flex items-center justify-center text-white font-bold border border-doc-border shadow-sm">
+                US
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-10">
+        
+        <!-- Área de Busca -->
+        <div class="max-w-3xl mx-auto mb-12 relative group">
+            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                <i class="ph ph-magnifying-glass text-2xl text-gray-500 group-focus-within:text-doc-green transition-colors"></i>
+            </div>
+            <input type="text" id="searchInput" 
+                class="block w-full pl-14 pr-6 py-4 text-lg bg-doc-panel border border-doc-border rounded-xl shadow-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-doc-green/30 focus:border-doc-green transition-all" 
+                placeholder="Buscar ID, Status, Cidade...">
+        </div>
+
+        <!-- Título da Seção -->
+        <div class="flex items-center justify-between mb-8 border-b border-doc-border pb-4">
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                <i class="ph ph-files text-doc-green"></i>
+                Manifestos Recentes
+            </h2>
+            <span class="text-xs text-doc-green bg-doc-green/10 border border-doc-green/20 px-3 py-1.5 rounded-full font-bold tracking-wide uppercase" id="resultadosCount">
+                0 resultados
+            </span>
+        </div>
+
+        <!-- Grid de Manifestos -->
+        <div id="manifestosGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Cards injetados via JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-gray-400 bg-doc-panel border border-doc-border rounded-xl mt-6">
+            <i class="ph ph-file-search text-6xl text-doc-border mb-4"></i>
+            <p class="text-xl font-bold text-white mb-2">Nenhum manifesto encontrado</p>
+            <p class="text-sm">Tente buscar por um ID diferente ou limpe os filtros de busca.</p>
+        </div>
+
+    </main>
+
+    <script>
+        // Dados simulados
+        const manifestosData = [
+            { id: 'Viagem #10295', status: 'Em Trânsito', rota: 'São Paulo -> Rio de Janeiro', veiculo: 'Placa ABC-1234' },
+            { id: 'Viagem #10296', status: 'Pendente', rota: 'Campinas -> São Paulo', veiculo: 'Aguardando' },
+            { id: 'Viagem #10297', status: 'Concluído', rota: 'Curitiba -> Florianópolis', veiculo: 'Placa XYZ-9876' },
+            { id: 'Viagem #10298', status: 'Em Trânsito', rota: 'Belo Horizonte -> Vitória', veiculo: 'Placa DEF-5678' },
+            { id: 'Viagem #10299', status: 'Concluído', rota: 'Porto Alegre -> Caxias do Sul', veiculo: 'Placa GHI-9012' },
+            { id: 'Viagem #10300', status: 'Cancelado', rota: 'Goiânia -> Brasília', veiculo: 'N/A' },
+            { id: 'Viagem #10301', status: 'Pendente', rota: 'Salvador -> Aracaju', veiculo: 'Aguardando' }
+        ];
+
+        const gridElement = document.getElementById('manifestosGrid');
+        const searchInput = document.getElementById('searchInput');
+        const countElement = document.getElementById('resultadosCount');
+        const emptyState = document.getElementById('emptyState');
+
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'Em Trânsito': return '<span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-blue-900/40 text-blue-300 border border-blue-700/50">Em Trânsito</span>';
+                case 'Concluído': return '<span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-emerald-900/40 text-emerald-300 border border-emerald-700/50">Concluído</span>';
+                case 'Pendente': return '<span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-amber-900/40 text-amber-300 border border-amber-700/50">Pendente</span>';
+                case 'Cancelado': return '<span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-red-900/40 text-red-300 border border-red-700/50">Cancelado</span>';
+                default: return `<span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-gray-800 text-gray-300 border border-gray-600">${status}</span>`;
+            }
+        }
+
+        function renderManifestos(manifestos) {
+            gridElement.innerHTML = '';
+
+            if (manifestos.length === 0) {
+                gridElement.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            } else {
+                gridElement.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+                
+                manifestos.forEach(item => {
+                    const cardHTML = `
+                        <div class="bg-doc-panel rounded-xl border border-doc-border p-6 flex flex-col justify-between h-full hover:border-doc-green/40 transition-colors">
+                            <div>
+                                <div class="flex justify-between items-start mb-5">
+                                    <div>
+                                        <p class="text-xs text-gray-500 font-bold uppercase mb-1">Identificador</p>
+                                        <h3 class="text-xl font-bold text-white">${item.id}</h3>
+                                    </div>
+                                    ${getStatusBadge(item.status)}
+                                </div>
+                                
+                                <div class="space-y-3 mb-6">
+                                    <div class="flex items-start gap-3">
+                                        <i class="ph ph-map-pin-line text-lg text-doc-green mt-0.5"></i>
+                                        <div>
+                                            <p class="text-xs text-gray-500 font-medium">Origem / Destino</p>
+                                            <p class="text-sm text-gray-200 font-medium">${item.rota}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <i class="ph ph-truck text-lg text-gray-500"></i>
+                                        <span class="text-sm text-gray-400">${item.veiculo}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full mt-auto flex items-center justify-center gap-2 bg-doc-btn hover:bg-doc-btnhover text-white font-semibold py-3 px-4 rounded-lg transition-colors border border-[#3b5e47]/30">
+                                <i class="ph ph-download-simple text-lg"></i>
+                                BAIXAR MDF-E
+                            </button>
+                        </div>
+                    `;
+                    gridElement.innerHTML += cardHTML;
+                });
+            }
+            countElement.textContent = `${manifestos.length} resultado${manifestos.length !== 1 ? 's' : ''}`;
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filteredData = manifestosData.filter(item => 
+                item.id.toLowerCase().includes(query) || 
+                item.status.toLowerCase().includes(query) ||
+                item.rota.toLowerCase().includes(query)
+            );
+            renderManifestos(filteredData);
+        });
+
+        // Init
+        renderManifestos(manifestosData);
+    </script>
+</body>
+</html>
