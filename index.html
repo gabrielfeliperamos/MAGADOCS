@@ -64,31 +64,63 @@
         </div>
     </main>
 
-    <script>
-        // COLOQUE AQUI A NOVA URL GERADA NO DEPLOY
+    <script>// COLOQUE AQUI SUA URL ATIVA
         const API_URL = 'https://script.google.com/a/macros/magazineluiza.com.br/s/AKfycbzmgJLDauO9WCrOc3eB5Q1FaQhFHVNoGIYwKVIy9U16EAkw2c1VlXvJJIOEHBcx_PZlnw/exec';
 
         async function getManifestos() {
             const container = document.getElementById('manifestos-container');
             
             try {
-                // Adicionando um timeout para robustez (cancela se demorar mais de 15s)
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-                const resposta = await fetch(API_URL, { signal: controller.signal });
-                clearTimeout(timeoutId);
-
-                if (!resposta.ok) throw new Error("Erro na rede.");
+                // Removido o AbortController que poderia estar conflitando ou cortando a requisição cedo demais
+                const resposta = await fetch(API_URL);
+                if (!resposta.ok) throw new Error("Erro de rede. Verifique CORS ou URL.");
                 
                 const dados = await resposta.json();
-                
                 container.innerHTML = '';
+
+                // Verifica se o Google Script enviou um erro tratado
+                if (dados.erroCritico) {
+                    throw new Error("Erro lá na Planilha Google: " + dados.erroCritico);
+                }
 
                 if (dados.length === 0) {
                     container.innerHTML = '<p class="text-[#8c9c91] text-center col-span-full py-10">Nenhum registro encontrado na planilha.</p>';
                     return;
                 }
+
+                dados.forEach(manifesto => {
+                    const cardHTML = `
+                        <div class="bg-[#111312] border border-[#2a302c] rounded-xl p-5 flex flex-col justify-between hover:border-[#4a5a50] transition-colors manifesto-card shadow-lg" data-id="${manifesto.id.toLowerCase()}" data-trajeto="${manifesto.trajeto.toLowerCase()}">
+                            <div>
+                                <div class="mb-4">
+                                    <p class="text-[10px] text-[#8c9c91] font-bold tracking-widest mb-1">ID DA VIAGEM</p>
+                                    <h3 class="text-xl text-gray-100 font-bold tracking-wider">#${manifesto.id}</h3>
+                                </div>
+                                <div class="mb-4">
+                                    <p class="text-[10px] text-[#8c9c91] font-bold tracking-widest mb-1">ROTA</p>
+                                    <p class="text-sm text-gray-300 font-medium">${manifesto.trajeto}</p>
+                                </div>
+                            </div>
+                            
+                            <button onclick="abrirLink('${manifesto.link}')" class="w-full mt-2 flex items-center justify-center gap-2 bg-[#263b2c] hover:bg-[#2d4734] text-[#8cd9a4] py-3 rounded-lg text-xs font-bold tracking-wider transition-colors border border-[#36523e]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                BAIXAR MDF-E
+                            </button>
+                        </div>
+                    `;
+                    container.innerHTML += cardHTML;
+                });
+
+            } catch (erro) {
+                // Agora o erro vai mostrar o motivo exato na tela
+                container.innerHTML = `<p class="text-red-400 text-center col-span-full py-10 font-bold">${erro.message}</p>`;
+                console.error(erro);
+            }
+        }
 
                 dados.forEach(manifesto => {
                     const cardHTML = `
