@@ -16,10 +16,17 @@
 </head>
 <body class="p-6 md:p-10 max-w-6xl mx-auto">
 
-    <!-- CABEÇALHO (Logo e Título, sem Unidade) -->
+    <!-- CABEÇALHO -->
     <header class="flex items-center gap-4 mb-12">
-        <!-- LOGO OFICIAL -->
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAYAAADnRuK4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFmGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAMHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNi4wLjAiPgogICA8cmRmOlJERiB4bWxuczpydWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vYWRvYmUvcmVzb3VyY2UtdXBkYXRlLWZvcm1hdC8xLjAvIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiPgogICAgICAgICA8eG1wOkNyZWF0b3JUb29sPkFkb2JlIElsbHVzdHJhdG9yPC94bXA6Q3JlYXRvclRvb2w+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwvcG90bzg+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIgdD0iaW1hZ2UiIj4KIDY0NiwxMiBMIDgwMCw0NSBMIDgwMCw4NTQgTCA2NDYsODg3IFoiIGZpbGw9IiMwYjBkMGMiLz4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94bXA+CiAgICA8L3N2Zz4" alt="MAGADOCs Logo" class="w-14 h-14 rounded-2xl shadow-lg border border-[#2a302c] object-cover bg-[#0b0e0c]" onerror="this.onerror=null; this.src='https://i.imgur.com/8Ndf1p8.png'">
+        <!-- LOGÓTIPO EM SVG NATIVO (À prova de bloqueios de TI) -->
+        <div class="w-12 h-12 shrink-0 relative">
+            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full drop-shadow-lg">
+                <rect width="200" height="200" rx="45" fill="#111613" stroke="#2a332d" stroke-width="2"/>
+                <path d="M50 150V60L100 110L150 60V150" stroke="#8cd9a4" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M150 60L120 60L150 90V60Z" fill="#e2ece4"/>
+                <circle cx="100" cy="120" r="16" stroke="#111613" stroke-width="8" fill="#8cd9a4"/>
+            </svg>
+        </div>
         
         <h1 class="text-3xl font-black tracking-widest text-white uppercase">
             MAGA<span class="text-[#8cd9a4]">DOCs</span>
@@ -52,32 +59,34 @@
     </main>
 
     <script>
-        // ⚠️ COLOQUE O SEU LINK AQUI (AQUELE QUE TERMINA EM ?output=csv)
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTx2xC-461BhCmjZSG5gQuEvKV7R4f706RLw40QErL5kvQSsJhhEc0MgHVxA_4Rb4e2hxOnGfPfLSYV/pubhtml';
+        // ⚠️ ATENÇÃO: COLOQUE AQUI O LINK DO GOOGLE SHEETS "PUBLICAR NA WEB" EM FORMATO CSV
+        const CSV_URL = 'COLE_O_SEU_LINK_DO_CSV_AQUI';
 
         async function getManifestos() {
             const container = document.getElementById('manifestos-container');
             
             try {
-                // Adiciona parâmetro aleatório para forçar a Vercel a não usar cache e ler dados novos
                 const urlSemCache = CSV_URL + (CSV_URL.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
                 
                 const resposta = await fetch(urlSemCache);
-                if (!resposta.ok) throw new Error("Verifique se colocou o link do CSV corretamente no código.");
+                if (!resposta.ok) throw new Error("Não foi possível aceder ao link da planilha.");
                 
                 const textoCSV = await resposta.text();
-                const dados = lerCSV(textoCSV);
                 
+                // SISTEMA DE SEGURANÇA: Bloqueia HTML se o link estiver errado
+                if (textoCSV.trim().toLowerCase().startsWith('<!doctype') || textoCSV.trim().toLowerCase().startsWith('<html')) {
+                    throw new Error("O link colocado não é um CSV válido. Certifique-se de que usou a opção 'Publicar na Web' e selecionou '.csv'.");
+                }
+
+                const dados = lerCSV(textoCSV);
                 container.innerHTML = '';
 
                 if (dados.length === 0) {
-                    container.innerHTML = '<p class="text-[#8c9c91] text-center col-span-full py-10">Nenhum registro encontrado na planilha.</p>';
+                    container.innerHTML = '<p class="text-[#8c9c91] text-center col-span-full py-10">Nenhum registo encontrado na planilha.</p>';
                     return;
                 }
 
-                // Renderiza os últimos 50 registos
                 dados.slice(-50).reverse().forEach(manifesto => {
-                    // LIMPEZA: Remove o ".pdf" do ID automaticamente
                     const idLimpo = manifesto.id.replace(/\.pdf$/i, '').trim();
                     
                     const cardHTML = `
@@ -122,12 +131,12 @@
                 const colunas = linhas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 const formatar = (c) => c ? c.replace(/(^"|"$)/g, '').trim() : "";
                 
-                const idViagem = formatar(colunas[2]); // Coluna C
+                const idViagem = formatar(colunas[2]); 
                 
                 if (idViagem) {
-                    const origem = formatar(colunas[6]) || "Origem"; // Coluna G
-                    const destino = formatar(colunas[7]) || "Destino"; // Coluna H
-                    const link = formatar(colunas[3]); // Coluna D
+                    const origem = formatar(colunas[6]) || "Origem";
+                    const destino = formatar(colunas[7]) || "Destino";
+                    const link = formatar(colunas[3]);
                     
                     manifestosEncontrados.push({
                         id: idViagem,
@@ -164,8 +173,6 @@
         }
 
         window.onload = getManifestos;
-
-        // Atualiza os dados a cada 10 segundos
         setInterval(getManifestos, 10000);
     </script>
 </body>
