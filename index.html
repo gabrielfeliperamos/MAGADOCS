@@ -16,11 +16,11 @@
 </head>
 <body class="p-6 md:p-10 font-sans">
 
-    <!-- Cabeçalho com Logo -->
+    <!-- Cabeçalho -->
     <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
         <div class="flex items-center gap-4">
-            <!-- Logo inserida aqui -->
-            <img src="Gemini_Generated_Image_a4sf8wa4sf8wa4sf_2.jpg" alt="Logo MAGADOCs" class="w-14 h-14 rounded-2xl shadow-lg border border-[#2a302c] object-cover">
+            <!-- Logótipo (se não encontrar o ficheiro, oculta-se automaticamente em vez de quebrar) -->
+            <img src="Gemini_Generated_Image_a4sf8wa4sf8wa4sf_2.jpg" alt="Logo MAGADOCs" onerror="this.style.display='none'" class="w-14 h-14 rounded-2xl shadow-lg border border-[#2a302c] object-cover">
             
             <div class="text-3xl font-black tracking-widest text-white">
                 MAGA<span class="text-[#8cd9a4]">DOCs</span>
@@ -46,7 +46,6 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
-                <!-- Busca aprimorada para buscar apenas por ID ou Rota (removido status) -->
                 <input type="text" id="campoBusca" onkeyup="filtrarManifestos()" placeholder="Procurar por ID da viagem ou rota..." class="w-full bg-[#111312] border border-[#2a302c] text-white text-base rounded-xl block pl-12 pr-4 py-4 focus:outline-none focus:border-[#8cd9a4] focus:ring-1 focus:ring-[#8cd9a4] transition-all placeholder-[#4a5a50]">
             </div>
         </div>
@@ -54,7 +53,6 @@
         <!-- Grid de Manifestos -->
         <div id="manifestos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="col-span-full flex flex-col items-center justify-center py-10">
-                <!-- Ícone de loading (animado) -->
                 <svg class="animate-spin h-8 w-8 text-[#8cd9a4] mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -64,31 +62,32 @@
         </div>
     </main>
 
-    <script>// COLOQUE AQUI SUA URL ATIVA
+    <script>
         const API_URL = 'https://script.google.com/a/macros/magazineluiza.com.br/s/AKfycbzmgJLDauO9WCrOc3eB5Q1FaQhFHVNoGIYwKVIy9U16EAkw2c1VlXvJJIOEHBcx_PZlnw/exec';
 
         async function getManifestos() {
             const container = document.getElementById('manifestos-container');
             
             try {
-                // Removido o AbortController que poderia estar conflitando ou cortando a requisição cedo demais
                 const resposta = await fetch(API_URL);
-                if (!resposta.ok) throw new Error("Erro de rede. Verifique CORS ou URL.");
+                if (!resposta.ok) throw new Error("Erro de rede. Verifique permissões ou CORS.");
                 
                 const dados = await resposta.json();
                 container.innerHTML = '';
 
-                // Verifica se o Google Script enviou um erro tratado
+                // Verifica se a API do Google retornou algum erro tratado
                 if (dados.erroCritico) {
-                    throw new Error("Erro lá na Planilha Google: " + dados.erroCritico);
+                    throw new Error("Erro na Planilha Google: " + dados.erroCritico);
                 }
 
-                if (dados.length === 0) {
+                // Verifica se não há dados
+                if (!Array.isArray(dados) || dados.length === 0) {
                     container.innerHTML = '<p class="text-[#8c9c91] text-center col-span-full py-10">Nenhum registro encontrado na planilha.</p>';
                     return;
                 }
 
-                dados.forEach(manifesto => {
+                // Renderiza apenas os 50 registos mais recentes para evitar lentidão no ecrã
+                dados.slice(-50).reverse().forEach(manifesto => {
                     const cardHTML = `
                         <div class="bg-[#111312] border border-[#2a302c] rounded-xl p-5 flex flex-col justify-between hover:border-[#4a5a50] transition-colors manifesto-card shadow-lg" data-id="${manifesto.id.toLowerCase()}" data-trajeto="${manifesto.trajeto.toLowerCase()}">
                             <div>
@@ -116,46 +115,7 @@
                 });
 
             } catch (erro) {
-                // Agora o erro vai mostrar o motivo exato na tela
                 container.innerHTML = `<p class="text-red-400 text-center col-span-full py-10 font-bold">${erro.message}</p>`;
-                console.error(erro);
-            }
-        }
-
-                dados.forEach(manifesto => {
-                    const cardHTML = `
-                        <div class="bg-[#111312] border border-[#2a302c] rounded-xl p-5 flex flex-col justify-between hover:border-[#4a5a50] transition-colors manifesto-card shadow-lg" data-id="${manifesto.id.toLowerCase()}" data-trajeto="${manifesto.trajeto.toLowerCase()}">
-                            <div>
-                                <div class="mb-4">
-                                    <p class="text-[10px] text-[#8c9c91] font-bold tracking-widest mb-1">ID DA VIAGEM</p>
-                                    <h3 class="text-xl text-gray-100 font-bold tracking-wider">#${manifesto.id}</h3>
-                                </div>
-                                <div class="mb-4">
-                                    <p class="text-[10px] text-[#8c9c91] font-bold tracking-widest mb-1">ROTA</p>
-                                    <!-- Trajeto agora recebe Coluna G x Coluna H -->
-                                    <p class="text-sm text-gray-300 font-medium">${manifesto.trajeto}</p>
-                                </div>
-                            </div>
-                            
-                            <button onclick="abrirLink('${manifesto.link}')" class="w-full mt-2 flex items-center justify-center gap-2 bg-[#263b2c] hover:bg-[#2d4734] text-[#8cd9a4] py-3 rounded-lg text-xs font-bold tracking-wider transition-colors border border-[#36523e]">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                    <polyline points="7 10 12 15 17 10"></polyline>
-                                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                                </svg>
-                                BAIXAR MDF-E
-                            </button>
-                        </div>
-                    `;
-                    container.innerHTML += cardHTML;
-                });
-
-             catch (erro) {
-                if (erro.name === 'AbortError') {
-                    container.innerHTML = `<p class="text-red-400 text-center col-span-full py-10">Tempo esgotado. O servidor demorou muito para responder.</p>`;
-                } else {
-                    container.innerHTML = `<p class="text-red-400 text-center col-span-full py-10">Erro de conexão. Verifique o link e o acesso da API.</p>`;
-                }
                 console.error(erro);
             }
         }
