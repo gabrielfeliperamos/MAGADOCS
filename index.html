@@ -7,92 +7,40 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background: radial-gradient(circle at center, #1a281f 0%, #050706 100%);
-            background-attachment: fixed;
+            background: #0b0e0c;
             min-height: 100vh;
             color: #ffffff;
+            font-family: ui-sans-serif, system-ui, sans-serif;
         }
     </style>
 </head>
-<body class="p-6 md:p-10 font-sans">
+<body class="p-6 md:p-10 max-w-6xl mx-auto">
 
-    <!-- Cabeçalho -->
-    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
-        <div class="flex items-center gap-4">
-            <!-- LOGO OFICIAL EM SVG NATIVO (Reconstruído exatamente como o original image_13.png) -->
-            <div class="w-14 h-14 shadow-lg rounded-2xl overflow-hidden border border-[#2a302c] shrink-0">
-                <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                    <!-- Fundo quadrado arredondado com o degradê escuro do original -->
-                    <defs>
-                        <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" stop-color="#1c2420" />
-                            <stop offset="100%" stop-color="#0a0d0b" />
-                        </radialGradient>
-                        <!-- Sombras e brilhos do efeito dobrado -->
-                        <linearGradient id="foldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
-                            <stop offset="50%" stop-color="#9fc8a7" stop-opacity="0.75" />
-                            <stop offset="100%" stop-color="#6e8f75" stop-opacity="0.95" />
-                        </linearGradient>
-                        <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#e2ece4" />
-                            <stop offset="100%" stop-color="#ffffff" />
-                        </linearGradient>
-                    </defs>
-                    <rect width="200" height="200" rx="46" fill="url(#bgGrad)"/>
-                    
-                    <!-- Sombra interna do círculo na dobra central -->
-                    <circle cx="100" cy="120" r="14" stroke="#000000" stroke-opacity="0.3" stroke-width="12" fill="none"/>
-                    <!-- O Círculo com check integrado da dobra central -->
-                    <circle cx="100" cy="120" r="14" stroke="#71947a" stroke-width="8" fill="none"/>
-                    <path d="M94 120L98 124L106 116" stroke="#71947a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-
-                    <!-- Perna Esquerda da letra 'M' (Preenchimento esverdeado de dobra de papel) -->
-                    <path d="M48 64V152H76V78.5L48 64Z" fill="#7ba384" fill-opacity="0.95"/>
-                    
-                    <!-- A Dobra Diagonal Central (Asas do M) -->
-                    <path d="M76 152H48L112 70L100 120L76 152Z" fill="url(#foldGrad)" fill-opacity="0.85"/>
-                    <path d="M124 152H152L88 70L100 120L124 152Z" fill="url(#foldGrad)" fill-opacity="0.6"/>
-
-                    <!-- Perna Direita da letra 'M' (Branco Papel Dobrado) -->
-                    <path d="M124 74.5V152H152V74.5H124Z" fill="url(#bodyGrad)"/>
-                    
-                    <!-- Detalhe da dobra de arquivo no topo superior direito (estilo documento) -->
-                    <path d="M152 74.5H132.5V56L152 74.5Z" fill="#e2ece4" stroke="#e2ece4" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-                    <path d="M132.5 56L152 74.5H135.5C133.5 74.5 132.5 73.5 132.5 71.5V56Z" fill="#1c2420" fill-opacity="0.3" />
-                </svg>
-            </div>
-            
-            <div class="text-3xl font-black tracking-widest text-white">
-                MAGA<span class="text-[#8cd9a4]">DOCs</span>
-            </div>
-        </div>
+    <!-- CABEÇALHO (Apenas Logo oficial e Título, sem Unidade) -->
+    <header class="flex items-center gap-4 mb-12">
+        <!-- LOGO OFICIAL EM CONVERSÃO DE IMAGEM DIRETA -->
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAYAAADnRuK4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFmGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAMHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNi4wLjAiPgogICA8cmRmOlJERiB4bWxuczpydWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vYWRvYmUvcmVzb3VyY2UtdXBkYXRlLWZvcm1hdC8xLjAvIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiPgogICAgICAgICA8eG1wOkNyZWF0b3JUb29sPkFkb2JlIElsbHVzdHJhdG9yPC94bXA6Q3JlYXRvclRvb2w+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwvcG90bzg+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIgdD0iaW1hZ2UiIj4KIDY0NiwxMiBMIDgwMCw0NSBMIDgwMCw4NTQgTCA2NDYsODg3IFoiIGZpbGw9IiMwYjBkMGMiLz4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94bXA+CiAgICA8L3N2Zz4" alt="MAGADOCs Logo" class="w-14 h-14 rounded-2xl shadow-lg border border-[#2a302c] object-cover bg-[#0b0e0c]" onerror="this.onerror=null; this.src='https://i.imgur.com/8Ndf1p8.png'">
         
-        <div class="w-full md:w-64">
-            <label class="block text-xs text-[#8c9c91] mb-1 font-semibold uppercase tracking-wider">Unidade</label>
-            <select class="w-full bg-[#111312] border border-[#2a302c] text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-[#4a5a50] appearance-none">
-                <option>São Paulo - Matriz</option>
-                <option>Rio de Janeiro</option>
-                <option>Minas Gerais</option>
-            </select>
-        </div>
+        <h1 class="text-3xl font-black tracking-widest text-white uppercase">
+            MAGA<span class="text-[#8cd9a4]">DOCs</span>
+        </h1>
     </header>
 
-    <!-- Campo de Busca -->
-    <main class="max-w-4xl mx-auto">
+    <!-- BUSCA CENTRALIZADA -->
+    <main>
         <div class="mb-10">
-            <div class="relative">
+            <div class="relative max-w-3xl mx-auto">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                     <svg class="w-5 h-5 text-[#8c9c91]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
-                <input type="text" id="campoBusca" onkeyup="filtrarManifestos()" placeholder="Procurar por ID da viagem ou rota..." class="w-full bg-[#111312] border border-[#2a302c] text-white text-base rounded-xl block pl-12 pr-4 py-4 focus:outline-none focus:border-[#8cd9a4] focus:ring-1 focus:ring-[#8cd9a4] transition-all placeholder-[#4a5a50]">
+                <input type="text" id="campoBusca" onkeyup="filtrarManifestos()" placeholder="Procurar por ID da viagem ou rota..." class="w-full bg-[#111613] border border-[#2a332d] text-white text-base rounded-xl block pl-12 pr-4 py-4 focus:outline-none focus:border-[#8cd9a4] focus:ring-1 focus:ring-[#8cd9a4] transition-all">
             </div>
         </div>
 
-        <!-- Container de Manifestos -->
-        <div id="manifestos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- CARDS -->
+        <div id="manifestos-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <div class="col-span-full flex flex-col items-center justify-center py-10">
                 <svg class="animate-spin h-8 w-8 text-[#8cd9a4] mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -104,11 +52,10 @@
     </main>
 
     <script>
-        const API_URL = '/api/manifestos';
+        const API_URL = '/api/manifestos'; 
 
         async function getManifestos() {
             const container = document.getElementById('manifestos-container');
-            
             try {
                 const resposta = await fetch(API_URL);
                 if (!resposta.ok) throw new Error("Erro na comunicação com a API.");
@@ -117,26 +64,27 @@
                 container.innerHTML = '';
 
                 if (!Array.isArray(dados) || dados.length === 0) {
-                    container.innerHTML = '<p class="text-[#8c9c91] text-center col-span-full py-10">Nenhum registro encontrado na planilha.</p>';
+                    container.innerHTML = '<p class="text-[#8c9c91] text-center col-span-full py-10">Nenhum registro encontrado.</p>';
                     return;
                 }
 
-                // Renderiza os últimos 50 registros
                 dados.slice(-50).reverse().forEach(manifesto => {
+                    // LIMPEZA: Remove o texto ".pdf" do ID para ficar limpo
+                    const idLimpo = manifesto.id.replace(/\.pdf$/i, '').trim();
+                    
                     const cardHTML = `
-                        <div class="bg-[#111312] border border-[#2a302c] rounded-xl p-5 flex flex-col justify-between hover:border-[#4a5a50] transition-colors manifesto-card shadow-lg" data-id="${manifesto.id.toLowerCase()}" data-trajeto="${manifesto.trajeto.toLowerCase()}">
+                        <div class="bg-[#111613] border border-[#2a332d] rounded-xl p-5 flex flex-col justify-between hover:border-[#4a5a50] transition-colors manifesto-card shadow-lg" data-id="${idLimpo.toLowerCase()}" data-trajeto="${manifesto.trajeto.toLowerCase()}">
                             <div>
                                 <div class="mb-4">
-                                    <p class="text-[10px] text-[#8c9c91] font-bold tracking-widest mb-1">ID DA VIAGEM</p>
-                                    <h3 class="text-xl text-gray-100 font-bold tracking-wider">#${manifesto.id}</h3>
+                                    <p class="text-[10px] text-[#8c9c91] font-bold tracking-widest mb-1 uppercase">ID da Viagem</p>
+                                    <h3 class="text-xl text-gray-100 font-bold tracking-wider">#${idLimpo}</h3>
                                 </div>
                                 <div class="mb-4">
-                                    <p class="text-[10px] text-[#8c9c91] font-bold tracking-widest mb-1">ROTA</p>
-                                    <p class="text-sm text-gray-300 font-medium">${manifesto.trajeto}</p>
+                                    <p class="text-[10px] text-[#8c9c91] font-bold tracking-widest mb-1 uppercase">Rota</p>
+                                    <p class="text-sm text-gray-300 font-medium truncate">${manifesto.trajeto}</p>
                                 </div>
                             </div>
-                            
-                            <button onclick="abrirLink('${manifesto.link}')" class="w-full mt-2 flex items-center justify-center gap-2 bg-[#263b2c] hover:bg-[#2d4734] text-[#8cd9a4] py-3 rounded-lg text-xs font-bold tracking-wider transition-colors border border-[#36523e]">
+                            <button onclick="abrirLink('${manifesto.link}')" class="w-full mt-2 flex items-center justify-center gap-2 bg-[#1a2b20] hover:bg-[#263e2e] text-[#8cd9a4] py-3 rounded-lg text-xs font-bold tracking-wider transition-colors border border-[#2a4533]">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                     <polyline points="7 10 12 15 17 10"></polyline>
@@ -148,10 +96,8 @@
                     `;
                     container.innerHTML += cardHTML;
                 });
-
             } catch (erro) {
                 container.innerHTML = `<p class="text-red-400 text-center col-span-full py-10 font-bold">${erro.message}</p>`;
-                console.error(erro);
             }
         }
 
@@ -180,8 +126,8 @@
         }
 
         window.onload = getManifestos;
-
-        // Atualização em tempo real a cada 5 segundos
+        
+        // Atualiza de 5 em 5 segundos sem perder o foco
         setInterval(getManifestos, 5000);
     </script>
 </body>
