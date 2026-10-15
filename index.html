@@ -19,9 +19,7 @@
     <!-- Cabeçalho -->
     <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
         <div class="flex items-center gap-4">
-            <!-- Logótipo (se não encontrar o ficheiro, oculta-se automaticamente em vez de quebrar) -->
             <img src="Gemini_Generated_Image_a4sf8wa4sf8wa4sf_2.jpg" alt="Logo MAGADOCs" onerror="this.style.display='none'" class="w-14 h-14 rounded-2xl shadow-lg border border-[#2a302c] object-cover">
-            
             <div class="text-3xl font-black tracking-widest text-white">
                 MAGA<span class="text-[#8cd9a4]">DOCs</span>
             </div>
@@ -57,36 +55,37 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <p class="text-[#8c9c91] text-center">Buscando dados no servidor...</p>
+                <p class="text-[#8c9c91] text-center">A ler base de dados CSV...</p>
             </div>
         </div>
     </main>
 
     <script>
-        const API_URL = 'https://script.google.com/a/macros/magazineluiza.com.br/s/AKfycbzmgJLDauO9WCrOc3eB5Q1FaQhFHVNoGIYwKVIy9U16EAkw2c1VlXvJJIOEHBcx_PZlnw/exec';
+        // COLOQUE AQUI O SEU NOVO LINK "PUBLICAR NA WEB" GERADO (TERMINA EM ?output=csv)
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTx2xC-461BhCmjZSG5gQuEvKV7R4f706RLw40QErL5kvQSsJhhEc0MgHVxA_4Rb4e2hxOnGfPfLSYV/pub?output=csv';
 
         async function getManifestos() {
             const container = document.getElementById('manifestos-container');
             
             try {
-                const resposta = await fetch(API_URL);
-                if (!resposta.ok) throw new Error("Erro de rede. Verifique permissões ou CORS.");
+                // Tenta puxar o ficheiro CSV direto do Google Sheets
+                const resposta = await fetch(CSV_URL);
+                if (!resposta.ok) throw new Error("Erro de rede. Verifique se o link está correto.");
                 
-                const dados = await resposta.json();
+                // Converte a resposta para texto
+                const textoCSV = await resposta.text();
+                
+                // Transforma o texto CSV num array de objectos Manifestos
+                const dados = lerCSV(textoCSV);
+                
                 container.innerHTML = '';
 
-                // Verifica se a API do Google retornou algum erro tratado
-                if (dados.erroCritico) {
-                    throw new Error("Erro na Planilha Google: " + dados.erroCritico);
-                }
-
-                // Verifica se não há dados
-                if (!Array.isArray(dados) || dados.length === 0) {
-                    container.innerHTML = '<p class="text-[#8c9c91] text-center col-span-full py-10">Nenhum registro encontrado na planilha.</p>';
+                if (dados.length === 0) {
+                    container.innerHTML = '<p class="text-[#8c9c91] text-center col-span-full py-10">Nenhum registro de viagem encontrado na planilha.</p>';
                     return;
                 }
 
-                // Renderiza apenas os 50 registos mais recentes para evitar lentidão no ecrã
+                // Renderiza os últimos 50 registos (evita que o navegador trave com planilhas gigantes)
                 dados.slice(-50).reverse().forEach(manifesto => {
                     const cardHTML = `
                         <div class="bg-[#111312] border border-[#2a302c] rounded-xl p-5 flex flex-col justify-between hover:border-[#4a5a50] transition-colors manifesto-card shadow-lg" data-id="${manifesto.id.toLowerCase()}" data-trajeto="${manifesto.trajeto.toLowerCase()}">
@@ -118,6 +117,39 @@
                 container.innerHTML = `<p class="text-red-400 text-center col-span-full py-10 font-bold">${erro.message}</p>`;
                 console.error(erro);
             }
+        }
+
+        // Função "tradutora" que pega no CSV e transforma num formato legível
+        function lerCSV(textoCSV) {
+            const linhas = textoCSV.split('\n');
+            const manifestosEncontrados = [];
+            
+            // i=1 para saltar a primeira linha (cabeçalhos)
+            for (let i = 1; i < linhas.length; i++) {
+                if (!linhas[i].trim()) continue; // Salta linhas em branco
+                
+                // Separa as colunas respeitando aspas internas do CSV
+                const colunas = linhas[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                
+                // Limpa aspas e espaços
+                const formatar = (c) => c ? c.replace(/(^"|"$)/g, '').trim() : "";
+                
+                // Mapeamento das colunas (A=0, B=1, C=2... G=6, H=7)
+                const idViagem = formatar(colunas[2]); // Coluna C
+                
+                if (idViagem) {
+                    const origem = formatar(colunas[6]) || "Origem"; // Coluna G
+                    const destino = formatar(colunas[7]) || "Destino"; // Coluna H
+                    const link = formatar(colunas[3]); // Coluna D
+                    
+                    manifestosEncontrados.push({
+                        id: idViagem,
+                        trajeto: `${origem} x ${destino}`,
+                        link: link
+                    });
+                }
+            }
+            return manifestosEncontrados;
         }
 
         function abrirLink(url) {
