@@ -177,6 +177,9 @@
         }
 
         window.onload = getManifestos;
+
+        // Atualiza os dados na tela automaticamente a cada 30 segundos
+        setInterval(getManifestos, 30000);
     </script>
 </body>
 </html>
